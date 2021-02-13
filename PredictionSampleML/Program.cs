@@ -16,28 +16,28 @@ namespace ConsoleApp2
 
             var mlContext = new MLContext(seed: 0);
 
-            var dataView = mlContext.Data.LoadFromTextFile<IrisData>(_dataPath, hasHeader: false, separatorChar: ',');
+            //var dataView = mlContext.Data.LoadFromTextFile<IrisData>(_dataPath, hasHeader: false, separatorChar: ',');
 
-            string featuresColumnName = "Features";
+            //string featuresColumnName = "Features";
 
-            var pipline = mlContext.Transforms
-                          .Concatenate(featuresColumnName, "SepalLength", "SepalWidth", "PetalLength", "PetalWidth")
-                          .Append(mlContext.Clustering.Trainers.KMeans(featuresColumnName, numberOfClusters: 3));
+            //var pipline = mlContext.Transforms
+            //              .Concatenate(featuresColumnName, "SepalLength", "SepalWidth", "PetalLength", "PetalWidth")
+            //              .Append(mlContext.Clustering.Trainers.KMeans(featuresColumnName, numberOfClusters: 3));
 
-            var model = pipline.Fit(dataView);
+            //var model = pipline.Fit(dataView);
 
-            var predictor = mlContext.Model.CreatePredictionEngine<IrisData, ClusterPrediction>(model);
+            //var predictor = mlContext.Model.CreatePredictionEngine<IrisData, ClusterPrediction>(model);
 
             //using (var fileStream = new FileStream(_modelPath, FileMode.Create, FileAccess.Write, FileShare.Write))
             //{
             //    mlContext.Model.Save(model, dataView.Schema, fileStream);
             //}
 
-            //DataViewSchema modelSchema;
+            DataViewSchema modelSchema;
 
-            //ITransformer trainedModel = mlContext.Model.Load(_modelPath, out modelSchema);
+            ITransformer trainedModel = mlContext.Model.Load(_modelPath, out modelSchema);
 
-            //var predictor = mlContext.Model.CreatePredictionEngine<IrisData, ClusterPrediction>(trainedModel);
+            var predictor = mlContext.Model.CreatePredictionEngine<IrisData, ClusterPrediction>(trainedModel);
 
             var prediction = predictor.Predict(TestIrisData.Setosa);
             Console.WriteLine($"Cluster: {prediction.PredictedClusterId}");
